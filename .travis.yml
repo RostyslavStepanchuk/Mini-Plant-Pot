@@ -6,7 +6,7 @@ jdk:
   - oraclejdk8
 
 node_js:
-  - 11.4
+  - 10
 
 cache:
   directories:
