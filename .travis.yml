@@ -5,9 +5,17 @@ language: java
 jdk:
   - oraclejdk8
 
+node_js:
+  - 11.4
+
 cache:
   directories:
   - $HOME/.m2
+  - ./frontent/mobile/node_modules/
+
+before_script:
+  - npm install --prefix frontent/mobile/
 
 script:
   - mvn clean test
+  - npm run build --prefix frontent/mobile/
