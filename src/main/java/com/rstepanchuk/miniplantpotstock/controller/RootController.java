@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RootController {
 
   @GetMapping
-  public ResponseEntity<String> redirectToMobile(){
+  public ResponseEntity<String> redirectToMobile() {
     return ResponseEntity.ok("Some day this will be a cool application");
   }
 }
