@@ -12,7 +12,7 @@ addons:
   sonarcloud:
     organization: "facebook-final-project"
     token: ${SONAR_CLOUD_TOKEN}
-
+    
 cache:
   directories:
   - $HOME/.m2
@@ -27,4 +27,4 @@ before_script:
 script:
   - mvn clean test
   - sonar-scanner
-  - npm run build --prefix frontend/mobile/
+
