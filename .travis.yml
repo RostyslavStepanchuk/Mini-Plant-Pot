@@ -5,9 +5,26 @@ language: java
 jdk:
   - oraclejdk8
 
+node_js:
+  - 10
+
+addons:
+  sonarcloud:
+    organization: "facebook-final-project"
+    token: ${SONAR_CLOUD_TOKEN}
+    
 cache:
   directories:
   - $HOME/.m2
+  - ./frontend/mobile/node_modules/
+
+before_install:
+  - nvm install 10
+
+before_script:
+  - npm install --prefix frontend/mobile/
 
 script:
   - mvn clean test
+  - sonar-scanner
+
