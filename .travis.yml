@@ -11,8 +11,7 @@ node_js:
 addons:
   sonarcloud:
     organization: "facebook-final-project"
-    token:
-      secure: ${SONAR_CLOUD_TOKEN}
+    token: ${SONAR_CLOUD_TOKEN}
 
 cache:
   directories:
