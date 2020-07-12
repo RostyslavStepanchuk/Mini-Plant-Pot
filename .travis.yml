@@ -21,4 +21,11 @@ before_script:
 
 script:
   - mvn clean test
+  - sonar-scanner
   - npm run build --prefix frontend/mobile/
+
+addons:
+  sonarcloud:
+    organization: "facebook-final-project"
+    token:
+      secure: ${SONAR_CLOUD_TOKEN}
