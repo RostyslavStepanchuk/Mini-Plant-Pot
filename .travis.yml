@@ -8,6 +8,12 @@ jdk:
 node_js:
   - 10
 
+addons:
+  sonarcloud:
+    organization: "facebook-final-project"
+    token:
+      secure: ${SONAR_CLOUD_TOKEN}
+
 cache:
   directories:
   - $HOME/.m2
@@ -23,9 +29,3 @@ script:
   - mvn clean test
   - sonar-scanner
   - npm run build --prefix frontend/mobile/
-
-addons:
-  sonarcloud:
-    organization: "facebook-final-project"
-    token:
-      secure: ${SONAR_CLOUD_TOKEN}
