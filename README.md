@@ -1,3 +1,3 @@
 #### APPLICATION FOR TRACKING MINI PLANT POTS STOCKS
 
-[![Build Status](https://travis-ci.org/RostyslavStepanchuk/Mini-Plant-Pot.svg?branch=master)](https://travis-ci.org/RostyslavStepanchuk/Mini-Plant-Pot) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=RostyslavStepanchuk_Mini-Plant-Pot&metric=alert_status)](https://sonarcloud.io/dashboard?id=RostyslavStepanchuk_Mini-Plant-Pot)
+[![Build Status](https://travis-ci.org/RostyslavStepanchuk/Mini-Plant-Pot.svg?branch=master)](https://travis-ci.org/RostyslavStepanchuk/Mini-Plant-Pot) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=RostyslavStepanchuk_Mini-Plant-Pot&metric=alert_status)](https://sonarcloud.io/dashboard?id=RostyslavStepanchuk_Mini-Plant-Pot) [![Coverage Status](https://coveralls.io/repos/github/RostyslavStepanchuk/Mini-Plant-Pot/badge.svg)](https://coveralls.io/github/RostyslavStepanchuk/Mini-Plant-Pot)
