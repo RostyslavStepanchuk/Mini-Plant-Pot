@@ -32,3 +32,15 @@ INSERT INTO production_orders (fk_pot_id, submit_date, initial_deadline, current
 
 INSERT INTO production_orders (fk_pot_id, submit_date, initial_deadline, current_deadline, deadline_changes, ordered_quantity)
   values (4, '20200814', '20200812', '20200818',1, 5);
+
+/* production_supplies */
+INSERT INTO production_supplies (fk_pot_id, supply_date, supplied_quantity, was_ordered)
+  values (3, '20200810', 5, false);
+
+/* customer_orders */
+INSERT INTO customer_orders (etsy_order_id, submitted, deadline_to_send, is_closed)
+  values ('feafu234234', '20200812','20200820', false);
+
+/* customer_orders_has_pots */
+INSERT INTO customer_orders_has_pots (fk_customer_order_id, fk_pot_id)
+  values (1, 4);

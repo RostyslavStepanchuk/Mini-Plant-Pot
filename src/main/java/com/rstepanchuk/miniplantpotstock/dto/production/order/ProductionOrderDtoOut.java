@@ -7,7 +7,7 @@ import java.util.Date;
 @Data
 public class ProductionOrderDtoOut {
   private Integer id;
-  private Long orderedPotId;
+  private Long potId;
   private Date submitDate;
   private Date initialDeadline;
   private Integer deadlineChanges;
