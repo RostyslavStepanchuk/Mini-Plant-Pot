@@ -24,7 +24,7 @@ public class ProductionOrder {
   private Long id;
   @ManyToOne
   @JoinColumn(name = "fk_pot_id")
-  private Pot orderedPot;
+  private Pot pot;
   @Column(name = "submit_date")
   private Date submitDate;
   @Column(name = "initial_deadline")

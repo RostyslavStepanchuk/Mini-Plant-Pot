@@ -22,15 +22,15 @@ public class ProductionOrderMapper {
     this.service = service;
   }
 
-  private ProductionOrderDtoOut entityOf(ProductionOrder entity) {
+  private ProductionOrderDtoOut responseDtoOf(ProductionOrder entity) {
     ProductionOrderDtoOut dto = modelMapper.map(entity, ProductionOrderDtoOut.class);
-    dto.setOrderedPotId(entity.getOrderedPot().getId());
+    dto.setPotId(entity.getPot().getId());
     return dto;
   }
 
   public List<ProductionOrderDtoOut> getProductionOrders() {
     return service.getProductionOrders().stream()
-        .map(this::entityOf)
+        .map(this::responseDtoOf)
         .collect(Collectors.toList());
   }
 }
