@@ -1,6 +1,7 @@
 package com.rstepanchuk.miniplantpotstock.entity.production;
 
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Data
+@Builder
 @Entity
 @Table(name = "production_orders")
 public class ProductionOrder {

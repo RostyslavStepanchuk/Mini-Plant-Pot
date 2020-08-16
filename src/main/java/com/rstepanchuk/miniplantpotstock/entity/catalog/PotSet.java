@@ -1,5 +1,6 @@
 package com.rstepanchuk.miniplantpotstock.entity.catalog;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Data
+@Builder
 @Entity
 @Table(name = "sets")
 public class PotSet implements Sku {

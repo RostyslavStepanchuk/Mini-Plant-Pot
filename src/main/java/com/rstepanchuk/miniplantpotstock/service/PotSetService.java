@@ -1,6 +1,5 @@
 package com.rstepanchuk.miniplantpotstock.service;
 
-import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
 import com.rstepanchuk.miniplantpotstock.entity.catalog.PotSet;
 import com.rstepanchuk.miniplantpotstock.repository.PotSetRepository;
 import org.springframework.beans.factory.annotation.Autowired;

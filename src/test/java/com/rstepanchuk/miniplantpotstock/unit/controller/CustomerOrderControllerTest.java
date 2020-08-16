@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CustomerOrderControllerTest {
+class CustomerOrderControllerTest {
 
   @InjectMocks
   CustomerOrderController customerOrderController;
@@ -28,7 +28,7 @@ public class CustomerOrderControllerTest {
   CustomerOrderMapper customerOrderMapper;
 
   @Test
-  public void getCustomerOrdersShouldReturnResponseWithListOfCustomerOrders(){
+  void getCustomerOrdersShouldReturnResponseWithListOfCustomerOrders(){
     List<CustomerOrderDtoOut> orders = new ArrayList<>();
     when(customerOrderMapper.getCustomerOrders()).thenReturn(orders);
 

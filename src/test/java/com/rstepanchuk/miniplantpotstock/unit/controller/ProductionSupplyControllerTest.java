@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductionSupplyControllerTest {
+class ProductionSupplyControllerTest {
 
   @InjectMocks
   ProductionSupplyController productionSupplyController;
@@ -27,7 +27,7 @@ public class ProductionSupplyControllerTest {
   ProductionSupplyMapper productionSupplyMapper;
 
   @Test
-  public void getProductionSuppliesShouldReturnResponseWithListOfProductionSupplies(){
+  void getProductionSuppliesShouldReturnResponseWithListOfProductionSupplies(){
     List<ProductionSupplyDtoOut> supplies = new ArrayList<>();
 
     when(productionSupplyMapper.getProductionSupplies()).thenReturn(supplies);

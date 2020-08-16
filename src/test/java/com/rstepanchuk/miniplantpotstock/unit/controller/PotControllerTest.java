@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PotControllerTest {
+class PotControllerTest {
 
   @InjectMocks
   PotController potController;
@@ -28,7 +28,7 @@ public class PotControllerTest {
   PotMapper potMapper;
 
   @Test
-  public void getAllPotsShouldReturnResponseWithListOfPots () {
+  void getAllPotsShouldReturnResponseWithListOfPots () {
     List<PotDtoOut> pots = new ArrayList<>();
 
     when(potMapper.getAllPots()).thenReturn(pots);

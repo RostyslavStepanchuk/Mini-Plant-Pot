@@ -1,6 +1,7 @@
 package com.rstepanchuk.miniplantpotstock.entity.order;
 
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "customer_orders")
+@Builder
 public class CustomerOrder {
 
   @Id
