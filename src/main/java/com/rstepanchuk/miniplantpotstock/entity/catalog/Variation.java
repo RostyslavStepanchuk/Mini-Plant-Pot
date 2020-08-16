@@ -1,5 +1,6 @@
 package com.rstepanchuk.miniplantpotstock.entity.catalog;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import java.util.Set;
 
 @Data
+@Builder
 @Entity
 @Table(name = "variations")
 public class Variation {

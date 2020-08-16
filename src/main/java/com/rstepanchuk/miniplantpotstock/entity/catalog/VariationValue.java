@@ -1,5 +1,6 @@
 package com.rstepanchuk.miniplantpotstock.entity.catalog;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -12,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Data
+@Builder
 @Entity
 @Table(name = "variation_values")
 public class VariationValue {

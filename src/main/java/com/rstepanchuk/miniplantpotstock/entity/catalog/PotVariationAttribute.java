@@ -1,6 +1,7 @@
 package com.rstepanchuk.miniplantpotstock.entity.catalog;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Data
+@Builder
 @Entity
 @Table(name = "variation_attributes")
 public class PotVariationAttribute {
