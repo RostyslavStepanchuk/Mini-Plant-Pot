@@ -52,3 +52,5 @@ hs_err_pid*
 
 # IDE files
 .idea
+
+/src/main/resources/etsy
