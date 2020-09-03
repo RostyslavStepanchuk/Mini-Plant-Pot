@@ -25,4 +25,9 @@ public class EtsyController {
     return ResponseEntity.ok("Ok");
   }
 
+  @GetMapping(value = "/handle_token")
+  public ResponseEntity<String> handleToken() {
+    return ResponseEntity.ok("Ok");
+  }
+
 }

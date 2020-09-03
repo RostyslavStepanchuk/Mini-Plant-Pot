@@ -1,21 +1,28 @@
 package com.rstepanchuk.miniplantpotstock.util.etsy;
 
+import com.rstepanchuk.miniplantpotstock.exception.EtsyTokenRequiredException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 @Component
 public class EtsyClient {
 
-  private EtsyAuthenticationManager authMgr;
+  private EtsyAuthMgr authMgr;
 
   @Autowired
-  public EtsyClient(EtsyAuthenticationManager authMgr) {
+  public EtsyClient(EtsyAuthMgr authMgr) {
     this.authMgr = authMgr;
   }
 
   public void getListings() {
-    String initialToken = authMgr.getInitialToken();
-    int useless = 0;
+    try {
+      authMgr.provideAuthentication("GET", "somedummyurl.com", new HashMap<>());
+    } catch (EtsyTokenRequiredException e) {
+      e.printStackTrace();
+    }
+
   }
 
 }
