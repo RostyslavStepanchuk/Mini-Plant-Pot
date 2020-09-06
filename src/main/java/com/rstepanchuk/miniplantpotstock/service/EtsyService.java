@@ -17,4 +17,13 @@ public class EtsyService {
   public void getListings() {
     etsyClient.getListings();
   }
+
+
+  public String getEtsyAuthorizationUrl() {
+    return etsyClient.getEtsyAuthorizationUrl();
+  }
+
+  public void accessToken(String oauthToken, String oauthVerifier) {
+    etsyClient.accessToken(oauthToken, oauthVerifier);
+  }
 }

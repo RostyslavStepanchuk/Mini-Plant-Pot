@@ -1,12 +1,9 @@
 package com.rstepanchuk.miniplantpotstock.util.etsy;
 
-import com.rstepanchuk.miniplantpotstock.exception.EtsyTokenRequiredException;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -34,50 +31,39 @@ public class EtsyAuthMgr {
   private static final String oauth_version = "oauth_version";
   private static final String oauth_signature = "oauth_signature";
   private static final String oauth_callback = "oauth_callback";
+  private static final String oauth_verifier = "oauth_verifier";
   private static final String signatureMethod = "HMAC-SHA1";
 
   private static final String ENCODING_METHOD = "HmacSHA1";
   private static final String AUTH_HEADER_NAME = "Authorization";
-  private static final String AUTH_CALLBACK_URL = "http://localhost:8080/api/v1/etsy/handle_token";
-  private static final String ETSY_GET_TOKEN_URL = "https://openapi.etsy.com/v2/oauth/request_token";
-  private static final String GET = "GET";
+  private static final String AUTH_CALLBACK_URL = "http://localhost:8080/api/v1/etsy/access_token"; // TODO: remove localhost reference
 
   @Value("${etsyProperties.credentials.key}")
   private String key;
   @Value("${etsyProperties.credentials.secret}")
   private String secret;
   private String token;
+  private String tokenSecret = "";
+  private String verifier;
 
-
-
-  private String getUrlForTokenGeneration() {
-    WebClient client = WebClient.builder().baseUrl(ETSY_GET_TOKEN_URL).build();
-    Map<String, String> params = new HashMap<>();
-    params.put("scope", "transactions_r");
-    try {
-      return client.get().uri(uriBuilder -> {
-        params.forEach(uriBuilder::queryParam);
-        return uriBuilder.build();
-      })
-          .headers(provideTokenLessAuthentication(GET, ETSY_GET_TOKEN_URL, params))
-          .retrieve()
-          .bodyToMono(String.class).block();
-
-    } catch (WebClientResponseException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e.getMessage());
-    }
-
+  public String getKey() {
+    return key;
   }
+
+  public void setTokenSecret(String tokenSecret) {
+    this.tokenSecret = tokenSecret;
+  }
+
+  public void setVerifier(String verifier) {
+    this.verifier = verifier;
+  }
+
+  public void setToken(String oauthToken) {
+    this.token = oauthToken;
+  }
+
 
   public Consumer<HttpHeaders> provideAuthentication(String method, String url, Map<String, String> params) {
-    if (token != null) {
-      return headers -> headers.add(AUTH_HEADER_NAME, getAuthHeader(method, url, params, token));
-    }
-    throw new EtsyTokenRequiredException(getUrlForTokenGeneration());
-  }
-
-  private Consumer<HttpHeaders> provideTokenLessAuthentication(String method, String url, Map<String, String> params) {
     return headers -> headers.add(AUTH_HEADER_NAME, getAuthHeader(method, url, params, token));
   }
 
@@ -114,8 +100,7 @@ public class EtsyAuthMgr {
     query.deleteCharAt(query.length() - 1);
     baseString.append(encoded(query.toString()));
     try {
-      String token = params.getOrDefault(oauth_token, "");
-      byte[] keyBytes = (encoded(secret) + "&" + token).getBytes(UTF_8);
+      byte[] keyBytes = (encoded(secret) + "&" + tokenSecret).getBytes(UTF_8);
       SecretKey key = new SecretKeySpec(keyBytes, ENCODING_METHOD);
       Mac mac = Mac.getInstance(ENCODING_METHOD);
       mac.init(key);
@@ -134,6 +119,9 @@ public class EtsyAuthMgr {
       params.put(oauth_token, token);
     } else {
       params.put(oauth_callback, AUTH_CALLBACK_URL);
+    }
+    if (verifier != null) {
+      params.put(oauth_verifier, verifier);
     }
     params.put(oauth_consumer_key, key);
     params.put(oauth_nonce, getNonce());
@@ -167,7 +155,6 @@ public class EtsyAuthMgr {
   private String queryParam(String key, String value) {
     return key + "=" + encoded(value) + "&";
   }
-
 
 }
 
