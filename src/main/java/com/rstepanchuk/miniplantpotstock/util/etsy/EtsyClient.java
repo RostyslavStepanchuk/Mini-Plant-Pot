@@ -1,5 +1,6 @@
 package com.rstepanchuk.miniplantpotstock.util.etsy;
 
+import com.rstepanchuk.miniplantpotstock.exception.EtsyAuthorizationException;
 import com.rstepanchuk.miniplantpotstock.util.FormData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ public class EtsyClient {
   private static final String ETSY_ACCESS_TOKEN_URL = "/v2/oauth/access_token";
   private static final String ETSY_REQUEST_TOKEN_URL = "/v2/oauth/request_token";
   private static final String ETSY_GET_LISTINGS_URL = "/v2/shops/%s/listings/active";
+  private static final String ETSY_GET_TRANSACTIONS_URL = "/v2/shops/%s/transactions";
   private static final String ETSY_HOST = "openapi.etsy.com";
   private static final String ETSY_PROTOCOL = "https";
 
@@ -51,6 +53,12 @@ public class EtsyClient {
           .retrieve()
           .bodyToMono(String.class).block();
     } catch (WebClientResponseException e) {
+      if (e.getRawStatusCode() == 403 || e.getRawStatusCode() == 401) {
+        authMgr.setToken(null);
+        authMgr.setTokenSecret("");
+        String etsyAuthorizationUrl = getEtsyAuthorizationUrl();
+        throw new EtsyAuthorizationException(etsyAuthorizationUrl);
+      }
       throw new RuntimeException(e.getMessage());
     }
   }
@@ -83,5 +91,12 @@ public class EtsyClient {
     FormData data = FormData.digest(response);
     authMgr.setToken(data.get("oauth_token"));
     authMgr.setTokenSecret(data.get("oauth_token_secret"));
+  }
+
+  public String getTransactions() {
+    String url = String.format(ETSY_GET_TRANSACTIONS_URL, shopId);
+    String response = call(url);
+    //TODO: map response to model
+    return response;
   }
 }

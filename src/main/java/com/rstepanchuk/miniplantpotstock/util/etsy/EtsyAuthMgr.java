@@ -42,8 +42,10 @@ public class EtsyAuthMgr {
   private String key;
   @Value("${etsyProperties.credentials.secret}")
   private String secret;
+  @Value("${etsyProperties.credentials.token}")
   private String token;
-  private String tokenSecret = "";
+  @Value("${etsyProperties.credentials.tokenSecret}")
+  private String tokenSecret;
   private String verifier;
 
   public String getKey() {
