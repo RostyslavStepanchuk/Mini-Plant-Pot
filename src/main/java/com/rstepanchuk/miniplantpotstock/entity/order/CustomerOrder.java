@@ -1,8 +1,10 @@
 package com.rstepanchuk.miniplantpotstock.entity.order;
 
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "customer_orders")
 @Builder
