@@ -13,7 +13,7 @@ import java.util.List;
 @Configuration
 public class SourcesConfig {
 
-  private final String resourcesPath = "src/main/resources";
+  private static final String RESOURCES_PATH = "src/main/resources";
 
   // Component has been overridden to allow adding other component-specific properties without
   // revealing sensitive data in repository
@@ -28,9 +28,9 @@ public class SourcesConfig {
   }
 
   private ClassPathResource[] getPathResources() {
-    File resources = new File(resourcesPath);
+    File resources = new File(RESOURCES_PATH);
     return getResourcesPaths(resources).stream()
-        .map(path -> path.substring(resourcesPath.length()))
+        .map(path -> path.substring(RESOURCES_PATH.length()))
         .map(ClassPathResource::new)
         .toArray(ClassPathResource[]::new);
   }

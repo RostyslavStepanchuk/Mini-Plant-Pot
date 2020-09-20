@@ -14,10 +14,6 @@ public class EtsyService {
     this.etsyClient = etsyClient;
   }
 
-  public void getListings() {
-    etsyClient.getListings();
-  }
-
   public void accessToken(String oauthToken, String oauthVerifier) {
     etsyClient.accessToken(oauthToken, oauthVerifier);
   }

@@ -1,9 +1,7 @@
 package com.rstepanchuk.miniplantpotstock.dto.order;
 
-import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
 

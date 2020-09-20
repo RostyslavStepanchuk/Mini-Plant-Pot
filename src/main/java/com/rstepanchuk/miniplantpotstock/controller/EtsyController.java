@@ -20,12 +20,6 @@ public class EtsyController {
     this.service = service;
   }
 
-  @GetMapping(value = "/listings")
-  public ResponseEntity<String> getAllPots() {
-    service.getListings();
-    return ResponseEntity.ok("Ok");
-  }
-
   @GetMapping(value = "/transactions")
   public ResponseEntity<String> getTransactions() {
     return ResponseEntity.ok(service.getTransactions());

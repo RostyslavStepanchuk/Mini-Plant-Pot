@@ -16,7 +16,6 @@ public class EtsyClient {
 
   private static final String ETSY_ACCESS_TOKEN_URL = "/v2/oauth/access_token";
   private static final String ETSY_REQUEST_TOKEN_URL = "/v2/oauth/request_token";
-  private static final String ETSY_GET_LISTINGS_URL = "/v2/shops/%s/listings/active";
   private static final String ETSY_GET_TRANSACTIONS_URL = "/v2/shops/%s/transactions";
   private static final String ETSY_HOST = "openapi.etsy.com";
   private static final String ETSY_PROTOCOL = "https";
@@ -69,19 +68,8 @@ public class EtsyClient {
 
     String response = call(ETSY_REQUEST_TOKEN_URL, "GET", params);
     FormData data = FormData.digest(response);
-    authMgr.setTokenSecret(data.get("oauth_token_secret"));
+    authMgr.setTokenSecret(data.get(EtsyAuthMgr.OAUTH_TOKEN_SECRET));
     return data.get("login_url");
-  }
-
-  public void getListings() {
-    Map<String, String> params = new HashMap<>();
-    params.put("api_key", authMgr.getKey());
-
-    String url = String.format(ETSY_GET_LISTINGS_URL, shopId);
-
-    String response = call(url, GET, params);
-    //TODO: map response to model
-    int useless = 0;
   }
 
   public void accessToken(String oauthToken, String oauthVerifier) {
@@ -89,14 +77,13 @@ public class EtsyClient {
     authMgr.setVerifier(oauthVerifier);
     String response = call(ETSY_ACCESS_TOKEN_URL);
     FormData data = FormData.digest(response);
-    authMgr.setToken(data.get("oauth_token"));
-    authMgr.setTokenSecret(data.get("oauth_token_secret"));
+    authMgr.setToken(data.get(EtsyAuthMgr.OAUTH_TOKEN));
+    authMgr.setTokenSecret(data.get(EtsyAuthMgr.OAUTH_TOKEN_SECRET));
   }
 
   public String getTransactions() {
     String url = String.format(ETSY_GET_TRANSACTIONS_URL, shopId);
-    String response = call(url);
+    return call(url);
     //TODO: map response to model
-    return response;
   }
 }

@@ -23,23 +23,24 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Component("EtsyAuthMgr")
 public class EtsyAuthMgr {
 
-  private static final String oauth_consumer_key = "oauth_consumer_key";
-  private static final String oauth_token = "oauth_token";
-  private static final String oauth_signature_method = "oauth_signature_method";
-  private static final String oauth_timestamp = "oauth_timestamp";
-  private static final String oauth_nonce = "oauth_nonce";
-  private static final String oauth_version = "oauth_version";
-  private static final String oauth_signature = "oauth_signature";
-  private static final String oauth_callback = "oauth_callback";
-  private static final String oauth_verifier = "oauth_verifier";
-  private static final String signatureMethod = "HMAC-SHA1";
+  private static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";
+  static final String OAUTH_TOKEN = "oauth_token";
+  static final String OAUTH_TOKEN_SECRET = "oauth_token_secret";
+  private static final String OAUTH_SIGNATURE_METHOD = "oauth_signature_method";
+  private static final String OAUTH_TIMESTAMP = "oauth_timestamp";
+  private static final String OAUTH_NONCE = "oauth_nonce";
+  private static final String OAUTH_VERSION = "oauth_version";
+  private static final String OAUTH_SIGNATURE = "oauth_signature";
+  private static final String OAUTH_CALLBACK = "oauth_callback";
+  private static final String OAUTH_VERIFIER = "oauth_verifier";
+  private static final String SIGNATURE_METHOD = "HMAC-SHA1";
 
   private static final String ENCODING_METHOD = "HmacSHA1";
   private static final String AUTH_HEADER_NAME = "Authorization";
   private static final String AUTH_CALLBACK_URL = "http://localhost:8080/api/v1/etsy/access_token"; // TODO: remove localhost reference
 
   @Value("${etsyProperties.credentials.key}")
-  private String key;
+  private String authKey;
   @Value("${etsyProperties.credentials.secret}")
   private String secret;
   @Value("${etsyProperties.credentials.token}")
@@ -47,10 +48,7 @@ public class EtsyAuthMgr {
   @Value("${etsyProperties.credentials.tokenSecret}")
   private String tokenSecret;
   private String verifier;
-
-  public String getKey() {
-    return key;
-  }
+  private Random random = new Random();
 
   public void setTokenSecret(String tokenSecret) {
     this.tokenSecret = tokenSecret;
@@ -83,7 +81,7 @@ public class EtsyAuthMgr {
             (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
     String signature = getSignature(method, url, params);
-    header.append(headerParam(oauth_signature, signature));
+    header.append(headerParam(OAUTH_SIGNATURE, signature));
     header.deleteCharAt(header.length() - 1);
 
     return header.toString();
@@ -118,18 +116,18 @@ public class EtsyAuthMgr {
   private Map<String, String> getOauthParameters( String token) {
     Map<String, String> params = new HashMap<>();
     if (token != null) {
-      params.put(oauth_token, token);
+      params.put(OAUTH_TOKEN, token);
     } else {
-      params.put(oauth_callback, AUTH_CALLBACK_URL);
+      params.put(OAUTH_CALLBACK, AUTH_CALLBACK_URL);
     }
     if (verifier != null) {
-      params.put(oauth_verifier, verifier);
+      params.put(OAUTH_VERIFIER, verifier);
     }
-    params.put(oauth_consumer_key, key);
-    params.put(oauth_nonce, getNonce());
-    params.put(oauth_signature_method, signatureMethod);
-    params.put(oauth_timestamp, String.valueOf(System.currentTimeMillis() / 1000));
-    params.put(oauth_version, "1.0");
+    params.put(OAUTH_CONSUMER_KEY, authKey);
+    params.put(OAUTH_NONCE, getNonce());
+    params.put(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD);
+    params.put(OAUTH_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000));
+    params.put(OAUTH_VERSION, "1.0");
 
     return params;
   }
@@ -142,7 +140,6 @@ public class EtsyAuthMgr {
     int leftLimit = 48; // numeral '0'
     int rightLimit = 122; // letter 'z'
     int targetStringLength = 10;
-    Random random = new Random();
 
     return random.ints(leftLimit, rightLimit + 1)
         .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
