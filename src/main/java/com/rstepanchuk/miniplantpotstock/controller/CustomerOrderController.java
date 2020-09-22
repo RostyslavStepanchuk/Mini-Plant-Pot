@@ -16,10 +16,10 @@ public class CustomerOrderController {
 
   private CustomerOrderMapper customerOrderMapper;
 
-  @Autowired
   public CustomerOrderController(CustomerOrderMapper customerOrderMapper) {
     this.customerOrderMapper = customerOrderMapper;
   }
+
 
   @GetMapping
   public ResponseEntity<List<CustomerOrderDtoOut>> getCustomerOrders() {

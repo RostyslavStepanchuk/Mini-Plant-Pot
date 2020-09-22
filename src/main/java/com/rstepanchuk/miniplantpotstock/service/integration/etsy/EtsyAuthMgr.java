@@ -1,4 +1,4 @@
-package com.rstepanchuk.miniplantpotstock.util.etsy;
+package com.rstepanchuk.miniplantpotstock.service.integration.etsy;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;

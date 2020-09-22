@@ -1,6 +1,6 @@
 package com.rstepanchuk.miniplantpotstock.service;
 
-import com.rstepanchuk.miniplantpotstock.util.etsy.EtsyClient;
+import com.rstepanchuk.miniplantpotstock.service.integration.etsy.EtsyClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

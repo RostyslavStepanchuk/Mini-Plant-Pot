@@ -8,16 +8,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class CustomerOrderMapper {
 
   private ModelMapper modelMapper;
   private CustomerOrderService service;
 
-  @Autowired
   public CustomerOrderMapper(ModelMapper modelMapper, CustomerOrderService service) {
     this.modelMapper = modelMapper;
     this.service = service;
@@ -30,6 +30,8 @@ public class CustomerOrderMapper {
   }
 
   public List<CustomerOrderDtoOut> getCustomerOrders() {
+    CustomerOrder testOrder = CustomerOrder.builder().id(333L).pots(new ArrayList<>()).isClosed(false).build();
+    CustomerOrder customerOrder = service.saveCustomerOrder(testOrder);
     return service.getCustomerOrders().stream()
         .map(this::responseDtoOf)
         .collect(Collectors.toList());

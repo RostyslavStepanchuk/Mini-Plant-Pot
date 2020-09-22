@@ -7,16 +7,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class CustomerOrderService {
 
   private CustomerOrderRepository repository;
 
-  @Autowired
   public CustomerOrderService(CustomerOrderRepository repository) {
     this.repository = repository;
   }
 
+  public CustomerOrder saveCustomerOrder(CustomerOrder order) {
+    CustomerOrder save = repository.save(order);
+    return save;
+  }
   public List<CustomerOrder> getCustomerOrders() {
     return repository.findAll();
   }

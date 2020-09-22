@@ -1,12 +1,12 @@
 package com.rstepanchuk.miniplantpotstock.dto.exception;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class EtsyAuthExceptionDto {
-  String type = "etsy_auth_error";
-  String message = "Error while authenticating Etsy API service";
-  String redirectUrl;
+  final String type = "etsy_auth_error";
+  final String message = "Error while authenticating Etsy API service";
+  final String redirectUrl;
 
   public EtsyAuthExceptionDto(String url) {
     this.redirectUrl = url;
