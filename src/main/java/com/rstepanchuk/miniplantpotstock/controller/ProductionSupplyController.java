@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1/production-supplies")
+@RequestMapping(value = "api/v1/production/supplies")
 public class ProductionSupplyController {
 
   private ProductionSupplyMapper productionSupplyMapper;

@@ -60,7 +60,7 @@ class PotControllerTest {
 
     when(potRepository.findAll()).thenReturn(pots);
 
-    mockMvc.perform(get("/api/v1/pots"))
+    mockMvc.perform(get("/api/v1/catalog/pots"))
         .andExpect(status().isOk());
   }
 
@@ -87,7 +87,7 @@ class PotControllerTest {
     when(potRepository.findAll()).thenReturn(new ArrayList<>());
     when(potSetRepository.findAll()).thenReturn(potSets);
 
-    mockMvc.perform(get("/api/v1/pots/all"))
+    mockMvc.perform(get("/api/v1/catalog/pots/all"))
         .andExpect(status().isOk());
   }
 }

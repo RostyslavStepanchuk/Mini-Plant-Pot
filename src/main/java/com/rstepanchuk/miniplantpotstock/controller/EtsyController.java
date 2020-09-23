@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 // TODO: remove this controller after etsy service can be embedded by other services
 @RestController
-@RequestMapping(value = "api/v1/etsy")
+@RequestMapping(value = "api/v1/integration/etsy")
 public class EtsyController {
 
   private EtsyService service;

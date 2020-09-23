@@ -65,7 +65,7 @@ class CustomerOrderControllerTest {
 
     when(repository.findAll()).thenReturn(customerOrders);
 
-    mockMvc.perform(get("/api/v1/customer-orders"))
+    mockMvc.perform(get("/api/v1/sale/orders"))
         .andExpect(status().isOk());
 
   }

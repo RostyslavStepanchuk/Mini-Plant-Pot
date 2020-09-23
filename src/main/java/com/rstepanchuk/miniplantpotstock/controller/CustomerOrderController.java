@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1/customer-orders")
+@RequestMapping(value = "api/v1/sale/orders")
 public class CustomerOrderController {
 
   private CustomerOrderMapper customerOrderMapper;

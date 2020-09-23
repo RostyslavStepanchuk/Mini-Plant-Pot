@@ -48,7 +48,7 @@ class ProductionOrderControllerTest {
 
     when(repository.findAll()).thenReturn(productionOrders);
 
-    mockMvc.perform(get("/api/v1/production-orders"))
+    mockMvc.perform(get("/api/v1/production/orders"))
         .andExpect(status().isOk());
   }
 }

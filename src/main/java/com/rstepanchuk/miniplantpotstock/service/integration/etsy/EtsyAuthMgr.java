@@ -1,5 +1,6 @@
-package com.rstepanchuk.miniplantpotstock.util.etsy;
+package com.rstepanchuk.miniplantpotstock.service.integration.etsy;
 
+import com.rstepanchuk.miniplantpotstock.exception.Auth1SignatureEncodingError;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -50,20 +51,20 @@ public class EtsyAuthMgr {
   private String verifier;
   private Random random = new Random();
 
-  public void setTokenSecret(String tokenSecret) {
+  void setTokenSecret(String tokenSecret) {
     this.tokenSecret = tokenSecret;
   }
 
-  public void setVerifier(String verifier) {
+  void setVerifier(String verifier) {
     this.verifier = verifier;
   }
 
-  public void setToken(String oauthToken) {
+  void setToken(String oauthToken) {
     this.token = oauthToken;
   }
 
 
-  public Consumer<HttpHeaders> provideAuthentication(String method, String url, Map<String, String> params) {
+  Consumer<HttpHeaders> provideAuthentication(String method, String url, Map<String, String> params) {
     return headers -> headers.add(AUTH_HEADER_NAME, getAuthHeader(method, url, params, token));
   }
 
@@ -109,7 +110,7 @@ public class EtsyAuthMgr {
       return new String(new Base64().encode(mac.doFinal(baseString.toString().getBytes(UTF_8))), UTF_8).trim();
     } catch (NoSuchAlgorithmException | InvalidKeyException algo) {
       algo.printStackTrace();
-      throw new RuntimeException(String.format("Unable to encode string %s", baseString.toString()));
+      throw new Auth1SignatureEncodingError(String.format("Unable to encode string %s", baseString.toString()));
     }
   }
 

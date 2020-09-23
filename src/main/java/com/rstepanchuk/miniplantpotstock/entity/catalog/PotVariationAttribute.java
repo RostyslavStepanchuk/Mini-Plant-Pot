@@ -1,6 +1,5 @@
 package com.rstepanchuk.miniplantpotstock.entity.catalog;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

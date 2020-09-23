@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1/pots")
+@RequestMapping(value = "api/v1/catalog/pots")
 public class PotController {
 
   private PotMapper potMapper;

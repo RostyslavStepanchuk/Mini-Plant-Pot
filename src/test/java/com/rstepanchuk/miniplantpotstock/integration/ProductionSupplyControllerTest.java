@@ -45,7 +45,7 @@ class ProductionSupplyControllerTest {
 
     when(repository.findAll()).thenReturn(productionSupplies);
 
-    mockMvc.perform(get("/api/v1/production-supplies"))
+    mockMvc.perform(get("/api/v1/production/supplies"))
         .andExpect(status().isOk());
   }
 }
