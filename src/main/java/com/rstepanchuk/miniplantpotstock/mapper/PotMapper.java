@@ -8,25 +8,20 @@ import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
 import com.rstepanchuk.miniplantpotstock.entity.catalog.PotSet;
 import com.rstepanchuk.miniplantpotstock.service.PotService;
 import com.rstepanchuk.miniplantpotstock.service.PotSetService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class PotMapper {
 
-  private ModelMapper modelMapper;
-  private PotService potService;
-  private PotSetService potSetService;
-
-  public PotMapper(ModelMapper modelMapper, PotService service, PotSetService potSetService) {
-    this.modelMapper = modelMapper;
-    this.potService = service;
-    this.potSetService = potSetService;
-  }
+  private final ModelMapper modelMapper;
+  private final PotService potService;
+  private final PotSetService potSetService;
 
   PotDtoOut responseDtoOf(Pot entity) {
     PotDtoOut dto = modelMapper.map(entity, PotDtoOut.class);

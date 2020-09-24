@@ -1,13 +1,10 @@
 package com.rstepanchuk.miniplantpotstock.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@Component
 public class FormDataParser {
 
   public Map<String, String> parse(String urlForm) {

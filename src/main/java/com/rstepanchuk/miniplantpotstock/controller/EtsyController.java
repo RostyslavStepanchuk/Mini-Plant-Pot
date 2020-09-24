@@ -1,6 +1,7 @@
 package com.rstepanchuk.miniplantpotstock.controller;
 
 import com.rstepanchuk.miniplantpotstock.service.EtsyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,14 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 // TODO: remove this controller after etsy service can be embedded by other services
 @RestController
 @RequestMapping(value = "api/v1/integration/etsy")
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class EtsyController {
 
-  private EtsyService service;
-
-  @Autowired
-  public EtsyController(EtsyService service) {
-    this.service = service;
-  }
+  private final EtsyService service;
 
   @GetMapping(value = "/transactions")
   public ResponseEntity<String> getTransactions() {

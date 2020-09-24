@@ -2,9 +2,9 @@ package com.rstepanchuk.miniplantpotstock.service.integration.etsy;
 
 import com.rstepanchuk.miniplantpotstock.exception.EtsyAuthorizationException;
 import com.rstepanchuk.miniplantpotstock.util.FormDataParser;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class EtsyClient {
 
   private static final String ETSY_ACCESS_TOKEN_URL = "/v2/oauth/access_token";
@@ -28,15 +28,8 @@ public class EtsyClient {
   @Value("${etsyProperties.credentials.shopId}")
   private String shopId;
 
-  private EtsyAuthMgr authMgr;
-  private FormDataParser formDataParser;
-
-
-  @Autowired
-  public EtsyClient(EtsyAuthMgr authMgr, FormDataParser formDataParser) {
-    this.authMgr = authMgr;
-    this.formDataParser = formDataParser;
-  }
+  private final EtsyAuthMgr authMgr;
+  private final FormDataParser formDataParser;
 
   private String call(String url) {
     return call(url, GET);

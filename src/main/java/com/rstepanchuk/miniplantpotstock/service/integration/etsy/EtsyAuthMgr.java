@@ -4,7 +4,6 @@ import com.rstepanchuk.miniplantpotstock.exception.Auth1SignatureEncodingError;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@Component("EtsyAuthMgr")
 public class EtsyAuthMgr {
 
   private static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";

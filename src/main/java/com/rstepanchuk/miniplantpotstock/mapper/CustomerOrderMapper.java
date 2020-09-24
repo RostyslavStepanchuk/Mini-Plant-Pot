@@ -4,24 +4,18 @@ import com.rstepanchuk.miniplantpotstock.dto.order.CustomerOrderDtoOut;
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
 import com.rstepanchuk.miniplantpotstock.entity.order.CustomerOrder;
 import com.rstepanchuk.miniplantpotstock.service.CustomerOrderService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class CustomerOrderMapper {
 
-  private ModelMapper modelMapper;
-  private CustomerOrderService service;
-
-  @Autowired
-  public CustomerOrderMapper(ModelMapper modelMapper, CustomerOrderService service) {
-    this.modelMapper = modelMapper;
-    this.service = service;
-  }
+  private final ModelMapper modelMapper;
+  private final CustomerOrderService service;
 
   private CustomerOrderDtoOut responseDtoOf(CustomerOrder entity) {
     CustomerOrderDtoOut dto = modelMapper.map(entity, CustomerOrderDtoOut.class);
