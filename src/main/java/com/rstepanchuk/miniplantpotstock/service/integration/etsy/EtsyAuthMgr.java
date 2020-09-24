@@ -1,7 +1,9 @@
 package com.rstepanchuk.miniplantpotstock.service.integration.etsy;
 
 import com.rstepanchuk.miniplantpotstock.exception.Auth1SignatureEncodingError;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class EtsyAuthMgr {
 
   private static final String OAUTH_CONSUMER_KEY = "oauth_consumer_key";
@@ -38,19 +41,12 @@ public class EtsyAuthMgr {
   private static final String AUTH_HEADER_NAME = "Authorization";
   private static final String AUTH_CALLBACK_URL = "http://localhost:8080/api/v1/etsy/access_token"; // TODO: remove localhost reference
 
-  @Value("${etsyProperties.credentials.key}")
-  private String authKey;
-  @Value("${etsyProperties.credentials.secret}")
-  private String secret;
-  @Value("${etsyProperties.credentials.token}")
-  private String token;
-  @Value("${etsyProperties.credentials.tokenSecret}")
-  private String tokenSecret;
+  private final EtsyCredentials etsyCredentials;
   private String verifier;
   private Random random = new Random();
 
   void setTokenSecret(String tokenSecret) {
-    this.tokenSecret = tokenSecret;
+    etsyCredentials.setTokenSecret(tokenSecret);
   }
 
   void setVerifier(String verifier) {
@@ -58,12 +54,12 @@ public class EtsyAuthMgr {
   }
 
   void setToken(String oauthToken) {
-    this.token = oauthToken;
+    etsyCredentials.setToken(oauthToken);
   }
 
 
   Consumer<HttpHeaders> provideAuthentication(String method, String url, Map<String, String> params) {
-    return headers -> headers.add(AUTH_HEADER_NAME, getAuthHeader(method, url, params, token));
+    return headers -> headers.add(AUTH_HEADER_NAME, getAuthHeader(method, url, params, etsyCredentials.getToken()));
   }
 
   private String getAuthHeader(String method, String url, Map<String, String> queryParams, String token) {
@@ -99,7 +95,7 @@ public class EtsyAuthMgr {
     query.deleteCharAt(query.length() - 1);
     baseString.append(encoded(query.toString()));
     try {
-      byte[] keyBytes = (encoded(secret) + "&" + tokenSecret).getBytes(UTF_8);
+      byte[] keyBytes = (encoded(etsyCredentials.getSecret()) + "&" + etsyCredentials.getTokenSecret()).getBytes(UTF_8);
       SecretKey key = new SecretKeySpec(keyBytes, ENCODING_METHOD);
       Mac mac = Mac.getInstance(ENCODING_METHOD);
       mac.init(key);
@@ -122,7 +118,7 @@ public class EtsyAuthMgr {
     if (verifier != null) {
       params.put(OAUTH_VERIFIER, verifier);
     }
-    params.put(OAUTH_CONSUMER_KEY, authKey);
+    params.put(OAUTH_CONSUMER_KEY, etsyCredentials.getAuthKey());
     params.put(OAUTH_NONCE, getNonce());
     params.put(OAUTH_SIGNATURE_METHOD, SIGNATURE_METHOD);
     params.put(OAUTH_TIMESTAMP, String.valueOf(System.currentTimeMillis() / 1000));

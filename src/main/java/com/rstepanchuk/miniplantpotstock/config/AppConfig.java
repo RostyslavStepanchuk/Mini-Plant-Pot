@@ -17,12 +17,15 @@ import com.rstepanchuk.miniplantpotstock.service.ProductionOrderService;
 import com.rstepanchuk.miniplantpotstock.service.ProductionSupplyService;
 import com.rstepanchuk.miniplantpotstock.service.integration.etsy.EtsyAuthMgr;
 import com.rstepanchuk.miniplantpotstock.service.integration.etsy.EtsyClient;
+import com.rstepanchuk.miniplantpotstock.service.integration.etsy.EtsyCredentials;
 import com.rstepanchuk.miniplantpotstock.util.FormDataParser;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@EnableConfigurationProperties(value = EtsyCredentials.class)
 public class AppConfig {
 
   //     <----- Mapper ----->
@@ -87,8 +90,13 @@ public class AppConfig {
   }
 
   @Bean
-  public EtsyAuthMgr etsyAuthMgr() {
-    return new EtsyAuthMgr();
+  public EtsyAuthMgr etsyAuthMgr(EtsyCredentials etsyCredentials) {
+    return new EtsyAuthMgr(etsyCredentials);
+  }
+
+  @Bean
+  EtsyCredentials etsyCredentials() {
+    return new EtsyCredentials();
   }
 
   //      <----- Utils ----->

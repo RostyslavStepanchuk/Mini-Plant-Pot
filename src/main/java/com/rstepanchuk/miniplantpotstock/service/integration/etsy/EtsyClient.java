@@ -25,7 +25,7 @@ public class EtsyClient {
 
   private static final String GET = "GET";
 
-  @Value("${etsyProperties.credentials.shopId}")
+  @Value("${etsy.credentials.shopId}")
   private String shopId;
 
   private final EtsyAuthMgr authMgr;
