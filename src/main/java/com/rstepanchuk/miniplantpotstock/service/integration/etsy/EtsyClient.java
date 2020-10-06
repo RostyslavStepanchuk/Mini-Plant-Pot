@@ -1,0 +1,112 @@
+package com.rstepanchuk.miniplantpotstock.service.integration.etsy;
+
+import com.rstepanchuk.miniplantpotstock.dto.integration.etsy.transaction.EtsyTransactionsCollection;
+import com.rstepanchuk.miniplantpotstock.exception.EtsyAuthorizationException;
+import com.rstepanchuk.miniplantpotstock.util.FormDataParser;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriBuilder;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
+public class EtsyClient {
+
+  private static final String ETSY_ACCESS_TOKEN_URL = "/v2/oauth/access_token";
+  private static final String ETSY_REQUEST_TOKEN_URL = "/v2/oauth/request_token";
+  private static final String ETSY_GET_TRANSACTIONS_URL = "/v2/shops/%s/transactions";
+  private static final String ETSY_GET_LISTING_BY_ID_URL = "/v2/listings/%s";
+  private static final String ETSY_HOST = "openapi.etsy.com";
+  private static final String ETSY_PROTOCOL = "https";
+
+  private static final String GET = "GET";
+
+  @Value("${etsy.credentials.shopId}")
+  private String shopId;
+
+  private final EtsyAuthMgr authMgr;
+  private final WebClient webClient;
+  private final FormDataParser formDataParser;
+
+
+  private <T> T  call(String url, Class<T> outputClass) {
+    return call(url, GET, outputClass);
+  }
+
+  private <T> T  call(String url, String method, Class<T> outputClass) {
+    return call(url, method, new HashMap<>(), outputClass);
+  }
+
+  private <T> T call(String url, String method, Map<String, String> params, Class<T> outputClass) {
+    return webClient
+        .get()
+        .uri(uriBuilder -> buildUri(uriBuilder, url, params))
+        .headers(authMgr.provideAuthentication(method, ETSY_PROTOCOL + "://" + ETSY_HOST + url, params))
+        .retrieve()
+        .onStatus(status->status.value() == 401, this::handleNonAuthorized)
+        .bodyToMono(outputClass)
+        .block();
+
+  }
+
+  private String getEtsyAuthorizationUrl() {
+    Map<String, String> params = new HashMap<>();
+    params.put("scope", "listings_w listings_r transactions_r");
+
+    String response = call(ETSY_REQUEST_TOKEN_URL, "GET", params, String.class);
+    Map<String, String> data = formDataParser.parse(response);
+    authMgr.setTokenSecret(data.get(EtsyAuthMgr.OAUTH_TOKEN_SECRET));
+    return data.get("login_url");
+  }
+
+  public String getNewAuthUrl() {
+    authMgr.setToken(null);
+    authMgr.setTokenSecret("");
+    authMgr.setVerifier(null);
+    return getEtsyAuthorizationUrl();
+  }
+
+  private Mono<EtsyAuthorizationException> handleNonAuthorized(ClientResponse resp) {
+    authMgr.setToken(null);
+    authMgr.setTokenSecret("");
+    authMgr.setVerifier(null);
+    //String etsyAuthorizationUrl = getEtsyAuthorizationUrl();
+    return Mono.just(new EtsyAuthorizationException("Rejected by etsy - was not authorized"));
+  }
+
+  public URI buildUri(UriBuilder uriBuilder, String path, Map<String, String> params) {
+    uriBuilder.scheme(ETSY_PROTOCOL).host(ETSY_HOST).path(path);
+    params.forEach(uriBuilder::queryParam);
+    return uriBuilder.build();
+  }
+
+  public void accessToken(String oauthToken, String oauthVerifier) {
+    authMgr.setToken(oauthToken);
+    authMgr.setVerifier(oauthVerifier);
+    String response = call(ETSY_ACCESS_TOKEN_URL, String.class);
+    Map<String, String> data = formDataParser.parse(response);
+    authMgr.setToken(data.get(EtsyAuthMgr.OAUTH_TOKEN));
+    authMgr.setTokenSecret(data.get(EtsyAuthMgr.OAUTH_TOKEN_SECRET));
+  }
+
+  public EtsyTransactionsCollection getTransactions() {
+    String url = String.format(ETSY_GET_TRANSACTIONS_URL, shopId);
+    return call(url, EtsyTransactionsCollection.class);
+  }
+
+  public String getListing(Long listingId) {
+    String url = String.format(ETSY_GET_LISTING_BY_ID_URL, listingId);
+    return call(url, String.class);
+  }
+
+  public String getStringTransactions() {
+    String url = String.format(ETSY_GET_TRANSACTIONS_URL, shopId);
+    return call(url, String.class);
+  }
+}

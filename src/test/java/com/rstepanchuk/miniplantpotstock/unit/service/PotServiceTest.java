@@ -29,14 +29,14 @@ class PotServiceTest {
     Pot superPuperPot = Pot.builder().id(345L).name("SuperPuperPot").availableQuantity(10).build();
     Pot wonderfulPot = Pot.builder().id(123L).name("wonderfulPot").availableQuantity(7).build();
 
-    ArrayList<Pot> pots = new ArrayList<Pot>() {{
+    ArrayList<Pot> pots = new ArrayList<>() {{
       add(superPuperPot);
       add(wonderfulPot);
     }};
 
     when(repository.findAll()).thenReturn(pots);
 
-    List<Pot> allPots = potService.getAllPots();
+    List<Pot> allPots = potService.getPots();
 
     assertEquals(pots.size(), allPots.size());
     assertIterableEquals(pots, allPots);

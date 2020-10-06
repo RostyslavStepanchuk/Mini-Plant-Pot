@@ -2,6 +2,7 @@ package com.rstepanchuk.miniplantpotstock.integration;
 
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
 import com.rstepanchuk.miniplantpotstock.entity.order.CustomerOrder;
+import com.rstepanchuk.miniplantpotstock.entity.catalog.Sku;
 import com.rstepanchuk.miniplantpotstock.repository.CustomerOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import java.util.Calendar;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -34,17 +34,12 @@ class CustomerOrderControllerTest {
     Pot superPuperPot = Pot.builder().id(345L).name("SuperPuperPot").availableQuantity(10).build();
     Pot wonderfulPot = Pot.builder().id(123L).name("wonderfulPot").availableQuantity(7).build();
 
-    ArrayList<Pot> pots1 = new ArrayList<Pot>() {{
-      add(superPuperPot);
-    }};
-
-    ArrayList<Pot> pots2 = new ArrayList<Pot>() {{
-      add(wonderfulPot);
-    }};
+    Sku sku1 = Sku.builder().id("SUPER_PUPER_POT").pots(new ArrayList<>(){{add(superPuperPot);}}).build();
+    Sku sku2 = Sku.builder().id("WONDERFUL_POT").pots(new ArrayList<>(){{add(wonderfulPot);}}).build();
 
     CustomerOrder order1 = CustomerOrder.builder()
         .id(1L)
-        .pots(pots1)
+        .sku(sku1)
         .deadlineToSend(Calendar.getInstance().getTime())
         .etsyOrderId("fwdewf3244")
         .isClosed(false)
@@ -52,7 +47,7 @@ class CustomerOrderControllerTest {
 
     CustomerOrder order2 = CustomerOrder.builder()
         .id(2L)
-        .pots(pots2)
+        .sku(sku2)
         .deadlineToSend(Calendar.getInstance().getTime())
         .etsyOrderId("encosy0382")
         .isClosed(false)
@@ -65,7 +60,7 @@ class CustomerOrderControllerTest {
 
     when(repository.findAll()).thenReturn(customerOrders);
 
-    mockMvc.perform(get("/api/v1/customer-orders"))
+    mockMvc.perform(get("/api/v1/sale/orders"))
         .andExpect(status().isOk());
 
   }

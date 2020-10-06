@@ -1,3 +1,11 @@
 spring:
   profiles:
     active: dev
+
+etsy:
+  credentials:
+    authKey: ${ETSY_KEY:KEY_DUMMY}
+    secret: ${ETSY_SECRET:SECRET_DUMMY}
+    shopId: ${ETSY_SHOP_ID:SHOP_ID_DUMMY}
+    token: ${ETSY_TOKEN:TOKEN_DUMMY}
+    tokenSecret: ${ETSY_TOKEN_SECRET:TOKEN_SECRET_DUMMY}

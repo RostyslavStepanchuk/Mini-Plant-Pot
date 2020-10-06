@@ -1,12 +1,10 @@
 package com.rstepanchuk.miniplantpotstock.integration;
 
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Pot;
-import com.rstepanchuk.miniplantpotstock.entity.catalog.PotSet;
 import com.rstepanchuk.miniplantpotstock.entity.catalog.PotVariationAttribute;
 import com.rstepanchuk.miniplantpotstock.entity.catalog.Variation;
 import com.rstepanchuk.miniplantpotstock.entity.catalog.VariationValue;
 import com.rstepanchuk.miniplantpotstock.repository.PotRepository;
-import com.rstepanchuk.miniplantpotstock.repository.PotSetRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,22 +15,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class PotControllerTest {
+class CatalogControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @MockBean
   private PotRepository potRepository;
-  @MockBean
-  private PotSetRepository potSetRepository;
 
   @Test
   void getAllPotsShouldReturnResponseStatusOk() throws Exception {
@@ -60,7 +55,7 @@ class PotControllerTest {
 
     when(potRepository.findAll()).thenReturn(pots);
 
-    mockMvc.perform(get("/api/v1/pots"))
+    mockMvc.perform(get("/api/v1/catalog/pot"))
         .andExpect(status().isOk());
   }
 
@@ -71,23 +66,15 @@ class PotControllerTest {
     Pot wonderfulPot = Pot.builder().id(123L).name("wonderfulPot").variationAttributes(new HashSet<>()).availableQuantity(7).build();
     Pot adorablePot = Pot.builder().id(321L).name("adorablePot").variationAttributes(new HashSet<>()).availableQuantity(9).build();
 
-    ArrayList<Pot> pots = new ArrayList<Pot>() {{
+    ArrayList<Pot> pots = new ArrayList<>() {{
       add(superPuperPot);
       add(wonderfulPot);
       add(adorablePot);
     }};
 
-
-
-    PotSet setOfPerfectPots = PotSet.builder().id(938L).name("SetOfPerfectPots").pots(pots).build();
-    ArrayList<PotSet> potSets = new ArrayList<PotSet>() {{
-      add(setOfPerfectPots);
-    }};
-
     when(potRepository.findAll()).thenReturn(new ArrayList<>());
-    when(potSetRepository.findAll()).thenReturn(potSets);
 
-    mockMvc.perform(get("/api/v1/pots/all"))
+    mockMvc.perform(get("/api/v1/catalog/sku"))
         .andExpect(status().isOk());
   }
 }
