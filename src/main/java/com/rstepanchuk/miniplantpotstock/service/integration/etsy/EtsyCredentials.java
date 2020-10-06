@@ -11,4 +11,5 @@ public class EtsyCredentials {
   private String secret;
   private String token;
   private String tokenSecret;
+  private String verifier;
 }

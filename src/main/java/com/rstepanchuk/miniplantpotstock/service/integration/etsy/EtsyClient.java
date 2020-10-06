@@ -1,5 +1,6 @@
 package com.rstepanchuk.miniplantpotstock.service.integration.etsy;
 
+import com.rstepanchuk.miniplantpotstock.dto.integration.etsy.transaction.EtsyTransactionsCollection;
 import com.rstepanchuk.miniplantpotstock.exception.EtsyAuthorizationException;
 import com.rstepanchuk.miniplantpotstock.util.FormDataParser;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class EtsyClient {
   private static final String ETSY_ACCESS_TOKEN_URL = "/v2/oauth/access_token";
   private static final String ETSY_REQUEST_TOKEN_URL = "/v2/oauth/request_token";
   private static final String ETSY_GET_TRANSACTIONS_URL = "/v2/shops/%s/transactions";
+  private static final String ETSY_GET_LISTING_BY_ID_URL = "/v2/listings/%s";
   private static final String ETSY_HOST = "openapi.etsy.com";
   private static final String ETSY_PROTOCOL = "https";
 
@@ -29,46 +31,56 @@ public class EtsyClient {
   private String shopId;
 
   private final EtsyAuthMgr authMgr;
+  private final WebClient webClient;
   private final FormDataParser formDataParser;
 
-  private String call(String url) {
-    return call(url, GET);
+
+  private <T> T  call(String url, Class<T> outputClass) {
+    return call(url, GET, outputClass);
   }
 
-  private String call(String url, String method) {
-    return call(url, method, new HashMap<>());
+  private <T> T  call(String url, String method, Class<T> outputClass) {
+    return call(url, method, new HashMap<>(), outputClass);
   }
 
-  private String call(String url, String method, Map<String, String> params) {
-    WebClient client = WebClient.create();
-    return client
+  private <T> T call(String url, String method, Map<String, String> params, Class<T> outputClass) {
+    return webClient
         .get()
         .uri(uriBuilder -> buildUri(uriBuilder, url, params))
         .headers(authMgr.provideAuthentication(method, ETSY_PROTOCOL + "://" + ETSY_HOST + url, params))
         .retrieve()
         .onStatus(status->status.value() == 401, this::handleNonAuthorized)
-        .bodyToMono(String.class).block();
+        .bodyToMono(outputClass)
+        .block();
 
   }
 
   private String getEtsyAuthorizationUrl() {
     Map<String, String> params = new HashMap<>();
-    params.put("scope", "transactions_r");
+    params.put("scope", "listings_w listings_r transactions_r");
 
-    String response = call(ETSY_REQUEST_TOKEN_URL, "GET", params);
+    String response = call(ETSY_REQUEST_TOKEN_URL, "GET", params, String.class);
     Map<String, String> data = formDataParser.parse(response);
     authMgr.setTokenSecret(data.get(EtsyAuthMgr.OAUTH_TOKEN_SECRET));
     return data.get("login_url");
   }
 
+  public String getNewAuthUrl() {
+    authMgr.setToken(null);
+    authMgr.setTokenSecret("");
+    authMgr.setVerifier(null);
+    return getEtsyAuthorizationUrl();
+  }
+
   private Mono<EtsyAuthorizationException> handleNonAuthorized(ClientResponse resp) {
     authMgr.setToken(null);
     authMgr.setTokenSecret("");
-    String etsyAuthorizationUrl = getEtsyAuthorizationUrl();
-    return Mono.just(new EtsyAuthorizationException(etsyAuthorizationUrl));
+    authMgr.setVerifier(null);
+    //String etsyAuthorizationUrl = getEtsyAuthorizationUrl();
+    return Mono.just(new EtsyAuthorizationException("Rejected by etsy - was not authorized"));
   }
 
-  private URI buildUri(UriBuilder uriBuilder, String path, Map<String, String> params) {
+  public URI buildUri(UriBuilder uriBuilder, String path, Map<String, String> params) {
     uriBuilder.scheme(ETSY_PROTOCOL).host(ETSY_HOST).path(path);
     params.forEach(uriBuilder::queryParam);
     return uriBuilder.build();
@@ -77,15 +89,24 @@ public class EtsyClient {
   public void accessToken(String oauthToken, String oauthVerifier) {
     authMgr.setToken(oauthToken);
     authMgr.setVerifier(oauthVerifier);
-    String response = call(ETSY_ACCESS_TOKEN_URL);
+    String response = call(ETSY_ACCESS_TOKEN_URL, String.class);
     Map<String, String> data = formDataParser.parse(response);
     authMgr.setToken(data.get(EtsyAuthMgr.OAUTH_TOKEN));
     authMgr.setTokenSecret(data.get(EtsyAuthMgr.OAUTH_TOKEN_SECRET));
   }
 
-  public String getTransactions() {
+  public EtsyTransactionsCollection getTransactions() {
     String url = String.format(ETSY_GET_TRANSACTIONS_URL, shopId);
-    return call(url);
-    //TODO: map response to model
+    return call(url, EtsyTransactionsCollection.class);
+  }
+
+  public String getListing(Long listingId) {
+    String url = String.format(ETSY_GET_LISTING_BY_ID_URL, listingId);
+    return call(url, String.class);
+  }
+
+  public String getStringTransactions() {
+    String url = String.format(ETSY_GET_TRANSACTIONS_URL, shopId);
+    return call(url, String.class);
   }
 }

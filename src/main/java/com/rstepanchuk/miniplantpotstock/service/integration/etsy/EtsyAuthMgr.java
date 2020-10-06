@@ -4,7 +4,6 @@ import com.rstepanchuk.miniplantpotstock.exception.Auth1SignatureEncodingError;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 
 import javax.crypto.Mac;
@@ -39,26 +38,25 @@ public class EtsyAuthMgr {
 
   private static final String ENCODING_METHOD = "HmacSHA1";
   private static final String AUTH_HEADER_NAME = "Authorization";
-  private static final String AUTH_CALLBACK_URL = "http://localhost:8080/api/v1/etsy/access_token"; // TODO: remove localhost reference
+  private static final String AUTH_CALLBACK_URL = "http://localhost:8080/api/v1/integration/etsy/access_token"; // TODO: remove localhost reference
 
   private final EtsyCredentials etsyCredentials;
-  private String verifier;
   private Random random = new Random();
 
-  void setTokenSecret(String tokenSecret) {
+  public void setTokenSecret(String tokenSecret) {
     etsyCredentials.setTokenSecret(tokenSecret);
   }
 
-  void setVerifier(String verifier) {
-    this.verifier = verifier;
+  public void setVerifier(String verifier) {
+    etsyCredentials.setVerifier(verifier);
   }
 
-  void setToken(String oauthToken) {
+  public void setToken(String oauthToken) {
     etsyCredentials.setToken(oauthToken);
   }
 
 
-  Consumer<HttpHeaders> provideAuthentication(String method, String url, Map<String, String> params) {
+  public Consumer<HttpHeaders> provideAuthentication(String method, String url, Map<String, String> params) {
     return headers -> headers.add(AUTH_HEADER_NAME, getAuthHeader(method, url, params, etsyCredentials.getToken()));
   }
 
@@ -115,8 +113,8 @@ public class EtsyAuthMgr {
     } else {
       params.put(OAUTH_CALLBACK, AUTH_CALLBACK_URL);
     }
-    if (verifier != null) {
-      params.put(OAUTH_VERIFIER, verifier);
+    if (etsyCredentials.getVerifier() != null) {
+      params.put(OAUTH_VERIFIER, etsyCredentials.getVerifier());
     }
     params.put(OAUTH_CONSUMER_KEY, etsyCredentials.getAuthKey());
     params.put(OAUTH_NONCE, getNonce());
@@ -128,7 +126,8 @@ public class EtsyAuthMgr {
   }
 
   private String encoded(String value) {
-    return URLEncoder.encode(value, UTF_8);
+    String encoded = URLEncoder.encode(value, UTF_8);
+    return encoded.replace("+", "%20"); // URLEncoder transforms space into "+" while "%20" needed
   }
 
   private String getNonce() {
