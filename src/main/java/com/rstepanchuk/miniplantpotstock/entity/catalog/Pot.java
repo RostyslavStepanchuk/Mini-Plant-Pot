@@ -20,7 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "pots")
-public class Pot implements Sku {
+public class Pot {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

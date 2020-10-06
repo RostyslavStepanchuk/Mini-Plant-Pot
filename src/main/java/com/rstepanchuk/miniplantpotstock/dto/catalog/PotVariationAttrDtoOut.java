@@ -1,4 +1,4 @@
-package com.rstepanchuk.miniplantpotstock.dto.pot;
+package com.rstepanchuk.miniplantpotstock.dto.catalog;
 
 import lombok.Data;
 
